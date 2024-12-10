@@ -1,4 +1,4 @@
-#include <opencv2/opencv.hpp>
+ï»¿#include <opencv2/opencv.hpp>
 #include <iostream>
 #include <chrono>
 
@@ -65,42 +65,40 @@ void NV12ToBGR(const Mat& nv12, Mat& bgr, int width, int height) {
 #endif
 
 int main() {
-    // JPEG‰æ‘œ‚ğ“Ç‚İ‚Ş
+    // JPEGç”»åƒã‚’èª­ã¿è¾¼ã‚€
     Mat img_jpg = imread("image.jpg", IMREAD_COLOR);
     if (img_jpg.empty()) {
         std::cerr << "Failed to load image." << std::endl;
         return -1;
     }
 
-    // BGR‚©‚çYUV (NV12)‚É•ÏŠ·
+    // BGRã‹ã‚‰YUV (NV12)ã«å¤‰æ›
     Mat img_nv12;
     auto start = high_resolution_clock::now();
     BGRToNV12(img_jpg, img_nv12);
     auto end = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(end - start).count();
-    std::cout << "BGR to NV12 conversion time: " << duration << " ms" << std::endl;
+    auto duration = duration_cast<microseconds>(end - start).count();
+    std::cout << "BGR to NV12 conversion time: " << duration << " Âµs" << std::endl;
 
-    // YUV (NV12)‚©‚çBGR‚É•ÏŠ·
+    // YUV (NV12)ã‹ã‚‰BGRã«å¤‰æ›
     Mat img_bgr;
     start = high_resolution_clock::now();
 #if USE_NV12_TO_BGR_OPENCV
-	cvtColor(img_nv12, img_bgr, COLOR_YUV2BGR_NV12);
+    cvtColor(img_nv12, img_bgr, COLOR_YUV2BGR_NV12);
 #else
     NV12ToBGR(img_nv12, img_bgr, img_jpg.cols, img_jpg.rows);
 #endif
     end = high_resolution_clock::now();
-    duration = duration_cast<milliseconds>(end - start).count();
-    std::cout << "NV12 to BGR conversion time (CPU, single-threaded): " << duration << " ms" << std::endl;
+    duration = duration_cast<microseconds>(end - start).count();
+    std::cout << "NV12 to BGR conversion time : " << duration << " Âµs" << std::endl;
 
-    // BGR‚©‚çBMP‚É•ÏŠ·
+    // BGRã‹ã‚‰BMPã«å¤‰æ›
     start = high_resolution_clock::now();
     imwrite("output.bmp", img_bgr);
     end = high_resolution_clock::now();
-    duration = duration_cast<milliseconds>(end - start).count();
-    std::cout << "BGR to BMP conversion time: " << duration << " ms" << std::endl;
+    duration = duration_cast<microseconds>(end - start).count();
+    std::cout << "BGR to BMP conversion time: " << duration << " Âµs" << std::endl;
 
     std::cout << "Conversion completed." << std::endl;
     return 0;
 }
-
-
